@@ -1,6 +1,13 @@
 import { useEffect, useState, useRef, useCallback } from "react";
 import Duck from "../Components/Duck";
 import { clouds } from "../Data/appdata";
+import { checkCollision } from "../utils/checkCollison";
+
+type ObstacleType = {
+  id: number;
+  position: number;
+  height: number;
+};
 
 const DuckDuckGo = () => {
   const [gameIsOver, setGameIsOver] = useState(false);
@@ -13,11 +20,10 @@ const DuckDuckGo = () => {
     "running"
   );
 
-  const [obstacles, setObstacles] = useState<
-    { id: number; position: number; height: number }[]
-  >([]);
+  const [obstacles, setObstacles] = useState<ObstacleType[]>([]);
 
   const duckPositionRef = useRef<HTMLDivElement>(null);
+  const obstaclesRef = useRef<{ [key: number]: HTMLDivElement | null }>({});
 
   const handleStartedGame = () => {
     const jumpTimeDifference = Date.now() - lastJump.current;
@@ -47,12 +53,14 @@ const DuckDuckGo = () => {
   const handleGameStart = useCallback(() => {
     setGameIsOver(false);
     setAnimationState("running");
+    setObstacles([]); // Reset obstacles
   }, []);
 
   const handleMain = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === " ") {
         if (gameIsOver) {
+          setJumpType("normal");
           handleGameStart();
         } else {
           handleStartedGame();
@@ -77,14 +85,13 @@ const DuckDuckGo = () => {
 
   useEffect(() => {
     const obstacleInterval = setInterval(() => {
-      // Generate a new obstacle with random height
       const newObstacle = {
         id: Date.now(),
         position: 100, // Start from the right side
         height: Math.floor(Math.random() * 50) + 50, // Random height
       };
       setObstacles((prevObstacles) => [...prevObstacles, newObstacle]);
-    }, 2000); // Spawn every 2 seconds
+    }, 2000);
 
     return () => clearInterval(obstacleInterval);
   }, []);
@@ -94,16 +101,26 @@ const DuckDuckGo = () => {
       return;
     }
     const moveObstaclesInterval = setInterval(() => {
-      setObstacles(
-        (prevObstacles) =>
-          prevObstacles
-            .map((obstacle) => ({
-              ...obstacle,
-              position: obstacle.position - 2, // Move left
-            }))
-            .filter((obstacle) => obstacle.position > -10) // Remove off-screen obstacles
+      setObstacles((prevObstacles) =>
+        prevObstacles
+          .map((obstacle) => ({
+            ...obstacle,
+            position: obstacle.position - 2, // Move left
+          }))
+          .filter((obstacle) => obstacle.position > -10)
       );
-    }, 30); // Update every 30ms for smooth animation
+
+      const duckC = duckPositionRef.current?.getBoundingClientRect();
+      Object.values(obstaclesRef.current).forEach((ob) => {
+        if (ob) {
+          const objC = ob.getBoundingClientRect();
+          if (checkCollision(duckC, objC)) {
+            handleGameOver();
+            return;
+          }
+        }
+      });
+    }, 30);
 
     return () => clearInterval(moveObstaclesInterval);
   }, [gameIsOver]);
@@ -121,7 +138,7 @@ const DuckDuckGo = () => {
           />
         ))}
       </div>
-      <div className="h-[300px] relative bg-red-700">
+      <div className="h-[300px] relative bg-red-70">
         <Duck
           ref={duckPositionRef}
           jumpType={jumpType}
@@ -129,9 +146,16 @@ const DuckDuckGo = () => {
           animationState={animationState}
         />
 
-        <div className="bg-red-400 w-full z-[9999] ">
+        <div className="bg-red-400 w-full z-[9999]">
           {obstacles.map((obstacle) => (
             <div
+              ref={(rf) => {
+                if (rf) {
+                  obstaclesRef.current[obstacle.id] = rf;
+                } else {
+                  delete obstaclesRef.current[obstacle.id];
+                }
+              }}
               key={obstacle.id}
               className="obstacle"
               style={{

@@ -17,11 +17,3 @@ export const clouds = [
   cloud7,
   cloud8,
 ];
-
-// Example hitbox dimensions
-export const duckHitbox = {
-  width: 40, // Set to the visible width of the duck
-  height: 40, // Set to the visible height of the duck
-  offsetX: 10, // Offset from the left to match the visible area
-  offsetY: 10, // Offset from the bottom to match the visible area
-};

@@ -26,7 +26,7 @@ const Duck = forwardRef<HTMLDivElement, duckParamType>(
       >
         <div
           ref={ref}
-          className="w-[66px] h-[82px] bg-blue-500 relative z-[9999] "
+          className="w-[66px] h-[82px] bg-blue-5 relative z-[9999] "
           style={{ right: "-62px", bottom: "-41px" }}
         ></div>
       </div>
