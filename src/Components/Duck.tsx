@@ -1,25 +1,23 @@
-// import frame2 from "../assets/frame2.png";
-import frame3 from "../assets/frame3.png";
 interface duckParamType {
-  state: boolean;
+  jumpType: "normal" | "single" | "double";
   gameIsOver: boolean;
   animationState: "paused" | "running";
 }
 
-const Duck = ({ state, animationState }: duckParamType) => {
-  const frame3Bgimage = {
-    backgroundImage: `url(${frame3})`,
-    animation: "none",
-  };
-  const padding1 = { padding: "0px" };
+const Duck = ({ jumpType, animationState }: duckParamType) => {
   return (
     <div
       id="duckImage"
       className="w-[12rem] h-[12rem] object-cover absolute left-[30%] top-[40%] transition-all"
       style={{
         backgroundSize: "cover",
-        transform: `translateY(${state ? "-60px" : "0px"})`,
-        ...(state ? frame3Bgimage : padding1),
+        transform: `translateY(${
+          jumpType == "double"
+            ? "-110px"
+            : jumpType == "single"
+            ? "-60px"
+            : "0px"
+        })`,
         animationPlayState: animationState,
       }}
     />

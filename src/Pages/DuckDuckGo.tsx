@@ -4,23 +4,39 @@ import { clouds } from "../Data/appdata";
 
 const DuckDuckGo = () => {
   const [gameIsOver, setGameIsOver] = useState(false);
-  const [isJumping, setIsJumping] = useState(false);
   const jumpTimeoutRef = useRef<number | null>(null);
+
+  const [jumpType, setJumpType] = useState<"normal" | "single" | "double">(
+    "normal"
+  );
+
+  const lastJump = useRef<number>(0);
 
   const [animationState, setanimationState] = useState<"running" | "paused">(
     "running"
   );
+  console.log("rendered");
 
   // Logic to handle jump
   useEffect(() => {
     function handleStartedGame() {
-      setIsJumping(true);
+      const jumpTimeDifference = Date.now() - lastJump.current;
+      console.log(jumpType);
+      if (jumpType == "double") {
+        console.log("alreaady at enought level");
+      } else if (jumpTimeDifference / 100 < 4) {
+        setJumpType("double");
+      } else {
+        setJumpType("single");
+      }
+      lastJump.current = Date.now();
+
       if (jumpTimeoutRef.current) {
         clearTimeout(jumpTimeoutRef.current);
       }
       jumpTimeoutRef.current = window.setTimeout(() => {
-        setIsJumping(false);
-      }, 200);
+        setJumpType("normal");
+      }, 300);
     }
 
     function handleMain(e: KeyboardEvent) {
@@ -78,7 +94,7 @@ const DuckDuckGo = () => {
         ))}
       </div>
       <Duck
-        state={isJumping}
+        jumpType={jumpType}
         gameIsOver={gameIsOver}
         animationState={animationState}
       />
