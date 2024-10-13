@@ -1,18 +1,23 @@
 import { useGameStore } from "../store/useGameStore";
 import { useRef } from "react";
+import useSound from "use-sound";
+import quack1 from "../assets/quack1.mp3";
 
 const useGameController = () => {
+  const [play, { stop }] = useSound(quack1);
   const { setGameIsOver, setAnimationState, resetGame, setJumpType, jumpType } =
     useGameStore();
 
   const jumpTimeoutRef = useRef<number | null>(null);
 
   const handleGameOver = () => {
+    play();
     setGameIsOver(true);
     setAnimationState("paused");
   };
 
   const handleGameStart = () => {
+    stop();
     resetGame();
   };
 
