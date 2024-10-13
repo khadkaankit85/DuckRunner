@@ -1,10 +1,12 @@
 import "./App.css";
-import Game from "./Pages/Game";
+import DuckDuckGo from "./Pages/DuckDuckGo";
+// import Game from "./Pages/Game";
 
 function App() {
   return (
     <>
-      <Game />
+      {/* <Game /> */}
+      <DuckDuckGo />
     </>
   );
 }
