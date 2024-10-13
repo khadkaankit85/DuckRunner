@@ -13,6 +13,12 @@ const DuckDuckGo = () => {
     "running"
   );
 
+  const [obstacles, setObstacles] = useState<
+    { id: number; position: number; height: number }[]
+  >([]);
+
+  const duckPositionRef = useRef<HTMLDivElement>(null);
+
   const handleStartedGame = () => {
     const jumpTimeDifference = Date.now() - lastJump.current;
 
@@ -69,6 +75,39 @@ const DuckDuckGo = () => {
     };
   }, [handleMain]);
 
+  useEffect(() => {
+    const obstacleInterval = setInterval(() => {
+      // Generate a new obstacle with random height
+      const newObstacle = {
+        id: Date.now(),
+        position: 100, // Start from the right side
+        height: Math.floor(Math.random() * 50) + 50, // Random height
+      };
+      setObstacles((prevObstacles) => [...prevObstacles, newObstacle]);
+    }, 2000); // Spawn every 2 seconds
+
+    return () => clearInterval(obstacleInterval);
+  }, []);
+
+  useEffect(() => {
+    if (gameIsOver) {
+      return;
+    }
+    const moveObstaclesInterval = setInterval(() => {
+      setObstacles(
+        (prevObstacles) =>
+          prevObstacles
+            .map((obstacle) => ({
+              ...obstacle,
+              position: obstacle.position - 2, // Move left
+            }))
+            .filter((obstacle) => obstacle.position > -10) // Remove off-screen obstacles
+      );
+    }, 30); // Update every 30ms for smooth animation
+
+    return () => clearInterval(moveObstaclesInterval);
+  }, [gameIsOver]);
+
   return (
     <div className="w-full h-screen flex flex-col">
       <div className="h-[10rem] w-[100vw] mt-20 overflow-hidden flex items-end justify-between gap-96">
@@ -82,12 +121,28 @@ const DuckDuckGo = () => {
           />
         ))}
       </div>
-      <Duck
-        jumpType={jumpType}
-        gameIsOver={gameIsOver}
-        animationState={animationState}
-      />
-      <div className="bg-red-400 w-full h-[20rem]"></div>
+      <div className="h-[300px] relative bg-red-700">
+        <Duck
+          ref={duckPositionRef}
+          jumpType={jumpType}
+          gameIsOver={gameIsOver}
+          animationState={animationState}
+        />
+
+        <div className="bg-red-400 w-full z-[9999] ">
+          {obstacles.map((obstacle) => (
+            <div
+              key={obstacle.id}
+              className="obstacle"
+              style={{
+                left: `${obstacle.position}%`,
+                height: `${obstacle.height}px`,
+                bottom: 0,
+              }}
+            />
+          ))}
+        </div>
+      </div>
     </div>
   );
 };

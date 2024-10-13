@@ -43,3 +43,9 @@ body {
 #duckImage {
     animation: duckRunningAnimation 0.4s infinite;
 }
+
+.obstacle {
+    position: absolute;
+    width: 20px;
+    background-color: red;
+}
