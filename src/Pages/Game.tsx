@@ -1,13 +1,7 @@
-import Listen from "../Components/Listen";
+// import Listen from "../Components/Listen";
 
 const Game = () => {
-  return (
-    <>
-      <h1>
-        <Listen />
-      </h1>
-    </>
-  );
+  return <div className=" w-full h-screen "></div>;
 };
 
 export default Game;
