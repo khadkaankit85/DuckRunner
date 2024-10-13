@@ -35,8 +35,7 @@ const Listen = () => {
       <p>{transcript}</p>
       <button
         onClick={() => {
-          resetTranscript;
-          console.log(transcript);
+          resetTranscript();
         }}
       >
         Reset

@@ -1,26 +1,26 @@
-import { useEffect, useState, useRef, useCallback } from "react";
+// DuckDuckGo.tsx
+import { useEffect, useRef, useCallback } from "react";
 import Duck from "../Components/Duck";
 import { clouds } from "../Data/appdata";
 import { checkCollision } from "../utils/checkCollison";
-
-type ObstacleType = {
-  id: number;
-  position: number;
-  height: number;
-};
+import { useGameStore } from "../store/useGameStore";
 
 const DuckDuckGo = () => {
-  const [gameIsOver, setGameIsOver] = useState(false);
-  const jumpTimeoutRef = useRef<number | null>(null);
-  const [jumpType, setJumpType] = useState<"normal" | "single" | "double">(
-    "normal"
-  );
-  const lastJump = useRef<number>(0);
-  const [animationState, setAnimationState] = useState<"running" | "paused">(
-    "running"
-  );
+  const {
+    gameIsOver,
+    jumpType,
+    animationState,
+    obstacles,
+    setGameIsOver,
+    setJumpType,
+    setAnimationState,
+    addObstacle,
+    moveObstacles,
+    resetGame,
+  } = useGameStore();
 
-  const [obstacles, setObstacles] = useState<ObstacleType[]>([]);
+  const jumpTimeoutRef = useRef<number | null>(null);
+  const lastJump = useRef<number>(0);
 
   const duckPositionRef = useRef<HTMLDivElement>(null);
   const obstaclesRef = useRef<{ [key: number]: HTMLDivElement | null }>({});
@@ -48,19 +48,16 @@ const DuckDuckGo = () => {
   const handleGameOver = useCallback(() => {
     setGameIsOver(true);
     setAnimationState("paused");
-  }, []);
+  }, [setGameIsOver, setAnimationState]);
 
   const handleGameStart = useCallback(() => {
-    setGameIsOver(false);
-    setAnimationState("running");
-    setObstacles([]); // Reset obstacles
-  }, []);
+    resetGame();
+  }, [resetGame]);
 
   const handleMain = useCallback(
     (e: KeyboardEvent) => {
       if (e.key === " ") {
         if (gameIsOver) {
-          setJumpType("normal");
           handleGameStart();
         } else {
           handleStartedGame();
@@ -84,31 +81,27 @@ const DuckDuckGo = () => {
   }, [handleMain]);
 
   useEffect(() => {
+    if (gameIsOver) {
+      return;
+    }
     const obstacleInterval = setInterval(() => {
       const newObstacle = {
         id: Date.now(),
-        position: 100, // Start from the right side
-        height: Math.floor(Math.random() * 50) + 50, // Random height
+        position: 100,
+        height: Math.floor(Math.random() * 50) + 50,
       };
-      setObstacles((prevObstacles) => [...prevObstacles, newObstacle]);
+      addObstacle(newObstacle);
     }, 2000);
 
     return () => clearInterval(obstacleInterval);
-  }, []);
+  }, [addObstacle, gameIsOver]);
 
   useEffect(() => {
     if (gameIsOver) {
       return;
     }
     const moveObstaclesInterval = setInterval(() => {
-      setObstacles((prevObstacles) =>
-        prevObstacles
-          .map((obstacle) => ({
-            ...obstacle,
-            position: obstacle.position - 2, // Move left
-          }))
-          .filter((obstacle) => obstacle.position > -10)
-      );
+      moveObstacles();
 
       const duckC = duckPositionRef.current?.getBoundingClientRect();
       Object.values(obstaclesRef.current).forEach((ob) => {
@@ -123,7 +116,7 @@ const DuckDuckGo = () => {
     }, 30);
 
     return () => clearInterval(moveObstaclesInterval);
-  }, [gameIsOver]);
+  }, [gameIsOver, moveObstacles, handleGameOver]);
 
   return (
     <div className="w-full h-screen flex flex-col">
