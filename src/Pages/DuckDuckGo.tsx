@@ -1,84 +1,40 @@
-// DuckDuckGo.tsx
-import { useEffect, useRef, useCallback } from "react";
+import { useEffect, useRef } from "react";
 import Duck from "../Components/Duck";
 import { clouds } from "../Data/appdata";
 import { checkCollision } from "../utils/checkCollison";
 import { useGameStore } from "../store/useGameStore";
+import useGameController from "../utils/useGameController";
 
 const DuckDuckGo = () => {
-  const {
-    gameIsOver,
-    jumpType,
-    animationState,
-    obstacles,
-    setGameIsOver,
-    setJumpType,
-    setAnimationState,
-    addObstacle,
-    moveObstacles,
-    resetGame,
-  } = useGameStore();
+  const { gameIsOver, animationState, obstacles, addObstacle, moveObstacles } =
+    useGameStore();
 
-  const jumpTimeoutRef = useRef<number | null>(null);
-  const lastJump = useRef<number>(0);
+  const { handleGameOver, handleGameStart, handleStartedGame } =
+    useGameController();
 
   const duckPositionRef = useRef<HTMLDivElement>(null);
   const obstaclesRef = useRef<{ [key: number]: HTMLDivElement | null }>({});
+  const lastJumpedOn = useRef(0);
 
-  const handleStartedGame = () => {
-    const jumpTimeDifference = Date.now() - lastJump.current;
-
-    if (jumpTimeDifference / 100 < 4) {
-      setJumpType("double");
-    } else if (jumpType !== "double") {
-      setJumpType("single");
-    }
-
-    lastJump.current = Date.now();
-
-    if (jumpTimeoutRef.current) {
-      clearTimeout(jumpTimeoutRef.current);
-    }
-
-    jumpTimeoutRef.current = window.setTimeout(() => {
-      setJumpType("normal");
-    }, 300);
-  };
-
-  const handleGameOver = useCallback(() => {
-    setGameIsOver(true);
-    setAnimationState("paused");
-  }, [setGameIsOver, setAnimationState]);
-
-  const handleGameStart = useCallback(() => {
-    resetGame();
-  }, [resetGame]);
-
-  const handleMain = useCallback(
-    (e: KeyboardEvent) => {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === " ") {
         if (gameIsOver) {
           handleGameStart();
         } else {
-          handleStartedGame();
+          handleStartedGame(lastJumpedOn);
         }
       }
       if (e.key === "d") {
         handleGameOver();
       }
-    },
-    [gameIsOver, handleGameStart, handleGameOver]
-  );
-
-  useEffect(() => {
-    document.addEventListener("keydown", handleMain);
-    return () => {
-      document.removeEventListener("keydown", handleMain);
-      if (jumpTimeoutRef.current) {
-        clearTimeout(jumpTimeoutRef.current);
-      }
     };
-  }, [handleMain]);
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [gameIsOver, handleGameStart, handleGameOver, handleStartedGame]);
 
   useEffect(() => {
     if (gameIsOver) {
@@ -94,7 +50,7 @@ const DuckDuckGo = () => {
     }, 2000);
 
     return () => clearInterval(obstacleInterval);
-  }, [addObstacle, gameIsOver]);
+  }, []);
 
   useEffect(() => {
     if (gameIsOver) {
@@ -116,7 +72,7 @@ const DuckDuckGo = () => {
     }, 30);
 
     return () => clearInterval(moveObstaclesInterval);
-  }, [gameIsOver, moveObstacles, handleGameOver]);
+  });
 
   return (
     <div className="w-full h-screen flex flex-col">
@@ -132,12 +88,7 @@ const DuckDuckGo = () => {
         ))}
       </div>
       <div className="h-[300px] relative bg-red-70">
-        <Duck
-          ref={duckPositionRef}
-          jumpType={jumpType}
-          gameIsOver={gameIsOver}
-          animationState={animationState}
-        />
+        <Duck ref={duckPositionRef} />
 
         <div className="bg-red-400 w-full z-[9999]">
           {obstacles.map((obstacle) => (
