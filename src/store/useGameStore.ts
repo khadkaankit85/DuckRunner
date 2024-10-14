@@ -7,6 +7,7 @@ interface ObstacleType {
   id: number;
   position: number;
   height: number;
+  bottom: number;
 }
 
 interface GameState {
@@ -28,7 +29,9 @@ export const useGameStore = create<GameState>((set) => ({
   animationState: "running",
   obstacles: [],
 
-  setGameIsOver: (isOver: boolean) => set({ gameIsOver: isOver }),
+  setGameIsOver: (isOver: boolean) => {
+    set({ gameIsOver: isOver });
+  },
   setJumpType: (jumpType) => set({ jumpType }),
   setAnimationState: (animationState) => set({ animationState }),
 

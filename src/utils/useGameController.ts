@@ -5,10 +5,17 @@ import quack1 from "../assets/quack1.mp3";
 
 const useGameController = () => {
   const [play, { stop }] = useSound(quack1);
-  const { setGameIsOver, setAnimationState, resetGame, setJumpType, jumpType } =
-    useGameStore();
+  const {
+    gameIsOver,
+    setGameIsOver,
+    setAnimationState,
+    resetGame,
+    setJumpType,
+    jumpType,
+  } = useGameStore();
 
   const jumpTimeoutRef = useRef<number | null>(null);
+  const lastJumpedOn = useRef<number>(0); // Moved here to keep track of the last jump time
 
   const handleGameOver = () => {
     play();
@@ -17,16 +24,25 @@ const useGameController = () => {
   };
 
   const handleGameStart = () => {
+    setGameIsOver(false);
     stop();
     resetGame();
   };
 
-  const handleStartedGame = (lastJumpedOn: React.MutableRefObject<number>) => {
-    const jumpTimeDifference = Date.now() - lastJumpedOn.current;
+  const handleStartedGame = () => {
+    if (useGameStore.getState().gameIsOver) {
+      handleGameStart();
+      return; // Prevent actions if the game is over
+    }
 
-    if (jumpTimeDifference / 100 < 4) {
+    const jumpTimeDifference = Date.now() - lastJumpedOn.current;
+    console.log("jumping and gameis over is ", gameIsOver);
+    // Check for a rapid jump trigger (within 150ms for double jump)
+    if (jumpTimeDifference < 1000) {
+      console.log("double jumped");
       setJumpType("double");
     } else if (jumpType !== "double") {
+      console.log("single jumped");
       setJumpType("single");
     }
 
