@@ -27,13 +27,13 @@ const useGameController = () => {
     if (useGameStore.getState().gameIsOver) {
       return;
     }
-    // const jumpTimeDifference = Date.now() - lastJumpedOn.current;
+    const jumpTimeDifference = Date.now() - lastJumpedOn.current;
 
-    // if (jumpTimeDifference / 100 < 4) {
-    //   setJumpType("double");
-    // } else if (jumpType !== "double") {
-    //   setJumpType("single");
-    // }
+    if (jumpTimeDifference / 100 < 4) {
+      return;
+    } else if (useGameStore.getState().jumpType !== "double") {
+      setJumpType("single");
+    }
     setJumpType("single");
 
     lastJumpedOn.current = Date.now();
