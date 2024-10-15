@@ -14,7 +14,6 @@ const DuckDuckGo = () => {
 
   const duckPositionRef = useRef<HTMLDivElement>(null);
   const obstaclesRef = useRef<{ [key: number]: HTMLDivElement | null }>({});
-  const lastJumpedOn = useRef(0);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -22,17 +21,25 @@ const DuckDuckGo = () => {
         if (gameIsOver) {
           handleGameStart();
         } else {
-          handleStartedGame(lastJumpedOn);
+          handleStartedGame();
         }
       }
       if (e.key === "d") {
         handleGameOver();
       }
     };
-
+    const handleDocClick = () => {
+      if (gameIsOver) {
+        handleGameStart();
+      } else {
+        handleStartedGame();
+      }
+    };
+    document.addEventListener("click", handleDocClick);
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("click", handleDocClick);
     };
   }, [gameIsOver, handleGameStart, handleGameOver, handleStartedGame]);
 
