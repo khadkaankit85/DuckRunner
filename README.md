@@ -1,50 +1,63 @@
-# React + TypeScript + Vite
+# Duck Duck Go Game
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## Overview
 
-Currently, two official plugins are available:
+Duck Duck Go is a simple web-based game inspired by the classic Chrome Dino game. Players control a duck that jumps over obstacles to score points and keep the game going as long as possible. The game features smooth animations and a fun environment, providing an engaging experience for players.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Features
 
-## Expanding the ESLint configuration
+- **Jump Mechanics**: The duck can jump over obstacles using a keyboard press.
+- **Obstacle Generation**: Randomly generated obstacles appear on the screen, requiring quick reflexes to avoid.
+- **Game Over Logic**: The game ends when the duck collides with an obstacle, allowing players to start a new game.
+- **Responsive Design**: The game adapts to different screen sizes for a better mobile experience.
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Technologies Used
 
-- Configure the top-level `parserOptions` property like this:
+- **React**: A JavaScript library for building user interfaces.
+- **Zustand**: A small, fast, and scalable bearbones state-management solution.
+- **Tailwind**: For styling and animations.
+- **TypeScript**: For static type checking, improving code quality and reducing bugs.
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+## Installation
+
+To run this project locally, follow these steps:
+
+1. **Clone the Repository**:
+
+```bash
+git clone https://github.com/khadkaankit85/QuackQuackGo.git
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+2. **Navigate to the Project Directory**:
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+```bash
+cd QuackQuackGo
 ```
+
+3. **Install Dependencies**:
+
+```bash
+npm install
+```
+
+4. **Start the Development Server**:
+
+```bash
+npm run dev
+```
+
+## Usage
+
+Once the development server is running, you can access the game by navigating to `http://localhost:5173` in your web browser. Use the spacebar to make the duck jump and avoid obstacles.
+
+## Live Demo
+
+You can play the game live at [QuackQuackGo](https://khadkaankit85.github.io/QuackQuackGo/).
+
+## Contributing
+
+Contributions are welcome! If you have any ideas, suggestions, or bug reports, please open an issue or submit a pull request.
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
