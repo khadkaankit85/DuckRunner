@@ -9,7 +9,7 @@ const Duck = forwardRef<HTMLDivElement, DuckProps>((_props, ref) => {
   return (
     <div
       id="duckImage"
-      className="w-[12rem] h-[12rem] object-cover absolute left-[30%] top-[40%] transition-all z-[9999]"
+      className="w-[12rem] h-[12rem] object-cover absolute  min-[940px]:left-[30%] top-[40%] transition-all z-[9999]"
       style={{
         backgroundSize: "cover",
         transform: `translateY(${
