@@ -93,7 +93,7 @@ const DuckDuckGo = () => {
       <div className=" relative bg-red-70">
         <Duck ref={duckPositionRef} />
 
-        <div className=" w-full h-[20rem] relative bottom-0 z-[9998]">
+        <div className=" w-full h-[17rem] relative bottom-0 z-[9998]">
           {obstacles.map((obstacle) => (
             <div
               ref={(rf) => {

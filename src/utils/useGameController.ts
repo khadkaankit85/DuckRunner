@@ -6,7 +6,7 @@ import quack1 from "../assets/quack1.mp3";
 const useGameController = () => {
   const [play, { stop }] = useSound(quack1);
 
-  const { setGameIsOver, setAnimationState, resetGame, setJumpType, jumpType } =
+  const { setGameIsOver, setAnimationState, resetGame, setJumpType } =
     useGameStore();
 
   const jumpTimeoutRef = useRef<number | null>(null);
@@ -27,13 +27,14 @@ const useGameController = () => {
     if (useGameStore.getState().gameIsOver) {
       return;
     }
-    const jumpTimeDifference = Date.now() - lastJumpedOn.current;
+    // const jumpTimeDifference = Date.now() - lastJumpedOn.current;
 
-    if (jumpTimeDifference / 100 < 4) {
-      setJumpType("double");
-    } else if (jumpType !== "double") {
-      setJumpType("single");
-    }
+    // if (jumpTimeDifference / 100 < 4) {
+    //   setJumpType("double");
+    // } else if (jumpType !== "double") {
+    //   setJumpType("single");
+    // }
+    setJumpType("single");
 
     lastJumpedOn.current = Date.now();
 
