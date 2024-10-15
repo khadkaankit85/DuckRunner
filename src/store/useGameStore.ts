@@ -7,6 +7,7 @@ interface ObstacleType {
   id: number;
   position: number;
   height: number;
+  image: string;
 }
 
 interface GameState {
@@ -37,15 +38,26 @@ export const useGameStore = create<GameState>((set) => ({
       obstacles: [...state.obstacles, obstacle],
     })),
 
-  moveObstacles: () =>
+  moveObstacles: () => {
+    // Get the current time in milliseconds
+    const currentTime = Date.now();
+    // Calculate seconds from the current time
+    const seconds = Math.floor((currentTime / 1000) % 60); // Get the last 60 seconds
+    // Use seconds to influence the random speed
+    const speedRandomness = seconds * 0.05; // This will increase position change every second
+
     set((state) => ({
       obstacles: state.obstacles
         .map((obstacle) => ({
           ...obstacle,
-          position: obstacle.position - 2,
+          // Move position based on random speed + seconds influence
+          position:
+            obstacle.position -
+            (Math.floor(Math.random() * 1.5 + 3) + speedRandomness),
         }))
         .filter((obstacle) => obstacle.position > -10),
-    })),
+    }));
+  },
 
   resetGame: () =>
     set({

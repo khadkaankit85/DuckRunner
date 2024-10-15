@@ -4,6 +4,7 @@ import { clouds } from "../Data/appdata";
 import { checkCollision } from "../utils/checkCollison";
 import { useGameStore } from "../store/useGameStore";
 import useGameController from "../utils/useGameController";
+import { getRandomImg } from "../utils/getRandomImage";
 
 const DuckDuckGo = () => {
   const { gameIsOver, animationState, obstacles, addObstacle, moveObstacles } =
@@ -15,6 +16,7 @@ const DuckDuckGo = () => {
   const duckPositionRef = useRef<HTMLDivElement>(null);
   const obstaclesRef = useRef<{ [key: number]: HTMLDivElement | null }>({});
   const lastJumpedOn = useRef(0);
+  const randomTimeRef = useRef(1000);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -37,20 +39,22 @@ const DuckDuckGo = () => {
   }, [gameIsOver, handleGameStart, handleGameOver, handleStartedGame]);
 
   useEffect(() => {
-    if (gameIsOver) {
+    if (useGameStore.getState().gameIsOver) {
       return;
     }
+
     const obstacleInterval = setInterval(() => {
       const newObstacle = {
         id: Date.now(),
         position: 100,
         height: Math.floor(Math.random() * 50) + 50,
+        image: getRandomImg(),
       };
       addObstacle(newObstacle);
-    }, 2000);
+    }, randomTimeRef.current);
 
     return () => clearInterval(obstacleInterval);
-  }, []);
+  }, [gameIsOver, addObstacle]);
 
   useEffect(() => {
     if (gameIsOver) {
@@ -90,7 +94,7 @@ const DuckDuckGo = () => {
       <div className="h-[300px] relative bg-red-70">
         <Duck ref={duckPositionRef} />
 
-        <div className="bg-red-400 w-full z-[9999]">
+        <div className=" w-full z-[9999]">
           {obstacles.map((obstacle) => (
             <div
               ref={(rf) => {
@@ -101,13 +105,19 @@ const DuckDuckGo = () => {
                 }
               }}
               key={obstacle.id}
-              className="obstacle"
+              className="obstacle min-w-fit min-h-fit"
               style={{
                 left: `${obstacle.position}%`,
                 height: `${obstacle.height}px`,
                 bottom: 0,
               }}
-            />
+            >
+              <img
+                src={obstacle.image}
+                alt=""
+                className="max-w-[40px] max-h-[40px]"
+              />
+            </div>
           ))}
         </div>
       </div>
