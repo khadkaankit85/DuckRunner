@@ -3,7 +3,7 @@ import { useGameStore } from "../store/useGameStore";
 
 type DuckProps = React.HTMLProps<HTMLDivElement>;
 
-const Duck = forwardRef<HTMLDivElement, DuckProps>((props, ref) => {
+const Duck = forwardRef<HTMLDivElement, DuckProps>((_props, ref) => {
   const { jumpType, animationState } = useGameStore();
 
   return (
