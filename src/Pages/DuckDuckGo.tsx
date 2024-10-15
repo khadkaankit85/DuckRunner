@@ -15,7 +15,6 @@ const DuckDuckGo = () => {
 
   const duckPositionRef = useRef<HTMLDivElement>(null);
   const obstaclesRef = useRef<{ [key: number]: HTMLDivElement | null }>({});
-  const lastJumpedOn = useRef(0);
   const randomTimeRef = useRef(1000);
 
   useEffect(() => {
@@ -24,7 +23,7 @@ const DuckDuckGo = () => {
         if (gameIsOver) {
           handleGameStart();
         } else {
-          handleStartedGame(lastJumpedOn);
+          handleStartedGame();
         }
       }
       if (e.key === "d") {
@@ -79,7 +78,7 @@ const DuckDuckGo = () => {
   });
 
   return (
-    <div className="w-full h-screen flex flex-col">
+    <div className="w-full h-[100dvh] flex flex-col">
       <div className="h-[10rem] w-[100vw] mt-20 overflow-hidden flex items-end justify-between gap-96">
         {clouds.map((cl, i) => (
           <img
@@ -91,10 +90,10 @@ const DuckDuckGo = () => {
           />
         ))}
       </div>
-      <div className="h-[300px] relative bg-red-70">
+      <div className=" relative bg-red-70">
         <Duck ref={duckPositionRef} />
 
-        <div className=" w-full z-[9999]">
+        <div className=" w-full h-[20rem] relative bottom-0 z-[9998]">
           {obstacles.map((obstacle) => (
             <div
               ref={(rf) => {
@@ -105,7 +104,7 @@ const DuckDuckGo = () => {
                 }
               }}
               key={obstacle.id}
-              className="obstacle min-w-fit min-h-fit"
+              className="obstacle  min-w-fit min-h-fit "
               style={{
                 left: `${obstacle.position}%`,
                 height: `${obstacle.height}px`,
