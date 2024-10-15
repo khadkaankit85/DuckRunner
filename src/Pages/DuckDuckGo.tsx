@@ -5,6 +5,7 @@ import { checkCollision } from "../utils/checkCollison";
 import { useGameStore } from "../store/useGameStore";
 import useGameController from "../utils/useGameController";
 import { getRandomImg } from "../utils/getRandomImage";
+import Score from "../Components/Score";
 
 const DuckDuckGo = () => {
   const { gameIsOver, animationState, obstacles, addObstacle, moveObstacles } =
@@ -128,6 +129,9 @@ const DuckDuckGo = () => {
             </div>
           ))}
         </div>
+      </div>
+      <div className="fixed top-[10px] right-[20px] min-[700px]:top-[15%] min-[700px]:right-[20%] font-serif">
+        <Score />
       </div>
     </div>
   );
