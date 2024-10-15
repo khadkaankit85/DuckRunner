@@ -31,9 +31,18 @@ const DuckDuckGo = () => {
       }
     };
 
+    const handleDocClick = () => {
+      if (gameIsOver) {
+        handleGameStart();
+      } else {
+        handleStartedGame();
+      }
+    };
+    document.addEventListener("click", handleDocClick);
     document.addEventListener("keydown", handleKeyDown);
     return () => {
       document.removeEventListener("keydown", handleKeyDown);
+      document.removeEventListener("click", handleDocClick);
     };
   }, [gameIsOver, handleGameStart, handleGameOver, handleStartedGame]);
 
