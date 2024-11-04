@@ -1,4 +1,4 @@
-# Duck Duck Go Game
+# [Duck Duck Go Game](https://khadkaankit85.github.io/QuackQuackGo/)
 
 ## Overview
 
